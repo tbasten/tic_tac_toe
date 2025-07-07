@@ -13,6 +13,12 @@ class Tile:
             self.size,
         )
     
+    def get_coordinate(self):
+        return (
+            self.x,
+            self.y,
+        )
+    
     def get_tile_state(self):
         return (self.state)
     
