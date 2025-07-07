@@ -1,5 +1,4 @@
 import pygame as pg
-pg.init()
 TILE_SIZE = 200
 TILE_ROW = 3
 TILE_COL = 3
@@ -35,7 +34,6 @@ class Tile:
     
     def set_tile_state(self,player):
         self.state = player
-        print("player", player)
 
 def init_game_board():
     grid = []
@@ -63,6 +61,28 @@ def toggle_next_turn(current_turn):
         case 2:
             return 1
 
+def get_player_move(tile):
+    match tile:
+        case 0:
+            return None
+        case 1:
+            return 1
+        case 2:
+            return 2
+
+def check_win_conditions(game_board):
+    played_moves = []
+    for row in game_board:
+        played_row = []
+        for col in row:
+            tile_state = check_win_conditions(col.get_tile_state()) 
+            played_row.append(tile_state)
+        played_moves.append(played_row)
+    return played_moves
+
+
+pg.init()
+
 current_turn = 1
 screen = pg.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
 running = True
@@ -80,3 +100,4 @@ while running:
             if grid[row][column].get_tile_state() == 0:
                 grid[row][column].set_tile_state(current_turn)
                 current_turn = toggle_next_turn(current_turn)
+            
