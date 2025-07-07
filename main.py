@@ -38,14 +38,30 @@ def get_player_move(tile):
             return 2
 
 def check_win_conditions(game_board):
+    winner = None
     played_moves = []
     for row in game_board:
         played_row = []
         for col in row:
-            tile_state = check_win_conditions(col.get_tile_state()) 
+            tile_state = get_player_move(col.get_tile_state())
             played_row.append(tile_state)
         played_moves.append(played_row)
-    return played_moves
+    print(played_moves)
+    for row in range(3):
+        if played_moves[row][0] is not None and played_moves[row][0] == played_moves[row][1] == played_moves[row][2]:
+            print(f"Winner: Player {played_moves[row][0]}")
+            return False
+    for col in range(3):
+        if played_moves[0][col] is not None and played_moves[0][col] == played_moves[1][col] == played_moves[2][col]:
+            print(f"Winner: Player {played_moves[0][col]}")
+            return False
+    if played_moves[0][0] is not None and played_moves[0][0] == played_moves[1][1] == played_moves[2][2]:
+            print(f"Winner: Player {played_moves[0][0]}")
+            return False
+    if played_moves[0][2] is not None and played_moves[0][2] == played_moves[1][1] == played_moves[2][0]:
+            print(f"Winner: Player {played_moves[0][2]}")
+            return False
+    return True
 
 pg.init()
 
@@ -53,6 +69,7 @@ current_turn = 1
 screen = pg.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
 running = True
 grid = init_game_board()
+
 
 while running:
     draw_game_board(grid)
@@ -66,4 +83,4 @@ while running:
             if grid[row][column].get_tile_state() == 0:
                 grid[row][column].set_tile_state(current_turn)
                 current_turn = toggle_next_turn(current_turn)
-            
+                running = check_win_conditions(grid)
