@@ -1,39 +1,6 @@
+from Tile import *
+from constants import *
 import pygame as pg
-TILE_SIZE = 200
-TILE_ROW = 3
-TILE_COL = 3
-TILE_GAP = 10
-SCREEN_HEIGHT = ((TILE_SIZE*TILE_ROW)+((TILE_GAP*TILE_ROW)+TILE_GAP))
-SCREEN_WIDTH = ((TILE_SIZE*TILE_COL)+((TILE_GAP*TILE_COL)+TILE_GAP))
-GRID_NOTPLAYED = 0
-GRID_PLAYED_X = 1
-GRID_PLAYED_Y = 2
-TILE_COLORS = [
-    (230,230,230),
-    (0,255,0),
-    (0,0,255)
-]
-
-class Tile:
-    def __init__(self,x,y,size,state):
-        self.x = x
-        self.y = y
-        self.size = size
-        self.state = state
-    
-    def get_location(self):
-        return (
-            self.x,
-            self.y,
-            self.size,
-            self.size,
-        )
-    
-    def get_tile_state(self):
-        return (self.state)
-    
-    def set_tile_state(self,player):
-        self.state = player
 
 def init_game_board():
     grid = []
@@ -79,7 +46,6 @@ def check_win_conditions(game_board):
             played_row.append(tile_state)
         played_moves.append(played_row)
     return played_moves
-
 
 pg.init()
 
