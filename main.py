@@ -6,27 +6,70 @@ TILE_COL = 3
 TILE_GAP = 10
 SCREEN_HEIGHT = ((TILE_SIZE*TILE_ROW)+((TILE_GAP*TILE_ROW)+TILE_GAP))
 SCREEN_WIDTH = ((TILE_SIZE*TILE_COL)+((TILE_GAP*TILE_COL)+TILE_GAP))
+GRID_NOTPLAYED = 0
+GRID_PLAYED_X = 1
+GRID_PLAYED_Y = 2
+TILE_COLORS = [
+    (230,230,230),
+    (0,255,0),
+    (0,0,255)
+]
 
-tile_pos = []
+class Tile:
+    def __init__(self,x,y,size,state):
+        self.x = x
+        self.y = y
+        self.size = size
+        self.state = state
+    
+    def get_location(self):
+        return (
+            self.x,
+            self.y,
+            self.size,
+            self.size,
+        )
+    
+    def get_tile_state(self):
+        return (self.state)
+    
+    def set_tile_state(self,player):
+        self.state = player
+        print("player", player)
 
-for row in range(TILE_ROW):
-    for col in range(TILE_COL):
-        x1 = TILE_GAP + col * (TILE_SIZE + TILE_GAP)
-        y1 = TILE_GAP + row * (TILE_SIZE + TILE_GAP)
-        x2 = TILE_SIZE
-        y2 = TILE_SIZE
-        tile_pos.append((x1,y1,x2,y2))
+def init_game_board():
+    grid = []
+    for row in range(TILE_ROW):
+        grid_row = []
+        for col in range(TILE_COL):
+            x = TILE_GAP + col * (TILE_SIZE + TILE_GAP)
+            y = TILE_GAP + row * (TILE_SIZE + TILE_GAP)
+            grid_col = Tile(x,y,TILE_SIZE,GRID_NOTPLAYED)
+            grid_row.append(grid_col)
+        grid.append(grid_row)
+    return(grid)
 
-print(tile_pos)
+def draw_game_board(board):
+    for row in board:
+        for col in row:
+            pg.draw.rect(screen, TILE_COLORS[col.get_tile_state()], col.get_location())
+            pg.display.flip()
+
+
+def toggle_next_turn(current_turn):
+    match current_turn:
+        case 1:
+            return 2
+        case 2:
+            return 1
+
+current_turn = 1
 screen = pg.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
-
 running = True
-
-for tile in tile_pos:
-    pg.draw.rect(screen, (230, 230, 230), tile)
-    pg.display.flip()
+grid = init_game_board()
 
 while running:
+    draw_game_board(grid)
     for event in pg.event.get():
         if event.type == pg.QUIT:
             running = False 
@@ -34,5 +77,6 @@ while running:
             pos = pg.mouse.get_pos()
             column = pos[0] // (TILE_SIZE + TILE_GAP)
             row = pos[1] // (TILE_SIZE + TILE_GAP)
-            pg.draw.rect(screen, (30, 30, 230), tile)
-            print("Click ", pos, "Grid coordinates: ", row, column)
+            if grid[row][column].get_tile_state() == 0:
+                grid[row][column].set_tile_state(current_turn)
+                current_turn = toggle_next_turn(current_turn)
